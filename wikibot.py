@@ -49,19 +49,28 @@ class wikibot:
         for elem in soup.find_all("a"):
             try: text = elem["href"]
             except: continue
-            if text.startswith("/wiki/") and ":" not in text and "(" not in text and not profanity.contains_profanity(text):
+            if text.startswith("/wiki/") and ":" not in text and "Main_Page" not in text and "(" not in text and not profanity.contains_profanity(text):
                 links.append(text)
         return random.choice(links)
     
+    def getimageurl(self, url):
+        page = requests.get(url).content
+        soup = BeautifulSoup(page,"html.parser")
+        for image in soup.find_all("img"):
+            if "//upload.wikimedia.org/wikipedia/commons/thumb/" in image["src"]:
+                return "https:" + image["src"]
+        return None
+
     def getelements(self, url):
         text = None
-        while text is None or len(text) > 280:
+        while text is None or len(text) > 280 or imageurl is None:
             possibleurl = "https://www.wikipedia.org"+self.findnewurl(url)
             text = self.getarticle(possibleurl)
-        print(text)
-        print(possibleurl)
+            imageurl = self.getimageurl(possibleurl)
+        self.article = possibleurl
+        return possibleurl, text, imageurl
 
-    def tweet(self, message, imageurl):
+    def tweet(self, message, url, imageurl):
         media = self.uploadimage(imageurl)
         media = media.media_id_string
         self.api.update_status(status = message, media_ids=[media])
