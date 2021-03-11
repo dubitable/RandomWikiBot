@@ -1,6 +1,7 @@
-import tweepy, json, requests, io, os, re
+import tweepy, json, requests, io, os, re, random
 from PIL import Image
 from bs4 import BeautifulSoup
+from profanity import profanity
 
 class wikibot:
     def __init__(self, startpath):
@@ -29,10 +30,10 @@ class wikibot:
         text = elem.text.strip().replace("(listen)","")
         text = re.sub(r"\[(.*?)\]|\((.*?)\)", "", text)
         text = text.replace("  ", " ")
-        return re.match(r"(.*?\.)", text).groups()[0]
+        text = re.match(r"(.*?\.)", text).groups()[0]
+        return text
 
-    def getarticle(self, articleurl = None):
-        if articleurl is None: articleurl = self.articleurl
+    def getarticle(self, articleurl):
         page = requests.get(articleurl).content
         soup = BeautifulSoup(page,"html.parser")
         for elem in soup.find_all("p")[0:4]:
@@ -40,11 +41,31 @@ class wikibot:
             except: break
         text = self.format(elem)
         return text
+    
+    def findnewurl(self, url):
+        page = requests.get(url).content
+        soup = BeautifulSoup(page,"html.parser")
+        links = []
+        for elem in soup.find_all("a"):
+            try: text = elem["href"]
+            except: continue
+            if text.startswith("/wiki/") and ":" not in text and "(" not in text and not profanity.contains_profanity(text):
+                links.append(text)
+        return random.choice(links)
+    
+    def getelements(self, url):
+        text = None
+        while text is None or len(text) > 280:
+            possibleurl = "https://www.wikipedia.org"+self.findnewurl(url)
+            text = self.getarticle(possibleurl)
+        print(text)
+        print(possibleurl)
 
     def tweet(self, message, imageurl):
         media = self.uploadimage(imageurl)
         media = media.media_id_string
         self.api.update_status(status = message, media_ids=[media])
 
-bot = wikibot("https://en.wikipedia.org/wiki/Wikipedia")
-print(bot.getarticle())
+url = "https://en.wikipedia.org/wiki/Wikipedia"
+bot = wikibot(url)
+bot.getelements(url)
