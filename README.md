@@ -1,1 +1,1 @@
-# RandomWikiBot
+# Random WikiBot
