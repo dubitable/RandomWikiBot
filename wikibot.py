@@ -4,14 +4,12 @@ from bs4 import BeautifulSoup
 from profanity import profanity
 
 class wikibot:
-    def __init__(self, startpath):
+    def __init__(self):
         with open("keys.json","r") as file:
             keys = json.loads(file.read())
 
         auth = tweepy.OAuthHandler(keys["consumerkey"], keys["consumerkeysecret"])
         auth.set_access_token(keys["accesstoken"], keys["accesstokensecret"])
-
-        self.articleurl = startpath 
         self.api = tweepy.API(auth)
 
     def deleteimages(self):
@@ -67,14 +65,19 @@ class wikibot:
             possibleurl = "https://www.wikipedia.org"+self.findnewurl(url)
             text = self.getarticle(possibleurl)
             imageurl = self.getimageurl(possibleurl)
-        self.article = possibleurl
-        return possibleurl, text, imageurl
+        self.getimageurl = possibleurl
+        with open("links.txt", "a") as file:
+            file.write("\n"+possibleurl)
+        return text, possibleurl, imageurl
 
-    def tweet(self, message, url, imageurl):
+    def tweet(self):
+        with open("links.txt", "r") as file:
+            self.articleurl = file.readlines()[-1]
+        message, url, imageurl = bot.getelements(self.articleurl) 
+        message += "\n" + url
         media = self.uploadimage(imageurl)
         media = media.media_id_string
         self.api.update_status(status = message, media_ids=[media])
 
-url = "https://en.wikipedia.org/wiki/Wikipedia"
-bot = wikibot(url)
-bot.getelements(url)
+bot = wikibot()
+bot.tweet()
