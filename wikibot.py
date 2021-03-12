@@ -28,7 +28,12 @@ class wikibot:
         text = elem.text.strip().replace("(listen)","")
         text = re.sub(r"\[(.*?)\]|\((.*?)\)", "", text)
         text = text.replace("  ", " ")
-        text = re.match(r"(.*?\.)", text).groups()[0]
+        sentences = re.findall(r"(.*?\.)", text)
+        text = ""
+        x=0
+        while x < len(sentences) and len(text)+len(sentences[x]) < 280:
+            text += sentences[x]
+            x+=1
         return text
 
     def getarticle(self, articleurl):
