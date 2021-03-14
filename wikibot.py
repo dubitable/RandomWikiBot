@@ -59,7 +59,7 @@ class wikibot:
         return text
 
     def conditions(self, text):
-        """Returns if a link is appropriate and to a Wikipedia article."""
+        """Returns True if a link is appropriate and to a Wikipedia article."""
         if text.startswith("/wiki/") and not profanity.contains_profanity(text):
             for elem in self.conditionlist:
                 if elem in text:
@@ -85,11 +85,11 @@ class wikibot:
             if self.conditions(text):
                 links.append(text)
         #return a random possible link
-        return random.choice(links)
+        return "https://www.wikipedia.org" + random.choice(links)
 
-    def getintro(self, articleurl, soup=None):
+    def getintro(self, url, soup=None):
         """Returns the intro section of a Wikipedia article."""
-        if soup is None: soup = getsoup(articleurl)
+        if soup is None: soup = getsoup(url)
         for elem in soup.find_all("p"):
             #make sure the <p> tag is not empty
             try: elem["class"]
@@ -107,16 +107,13 @@ class wikibot:
         return None
 
     def getelements(self, url, first=False):
-        """Returns a new link found on a Wikipedia page as well as the associated text and image."""
+        """If first is `True`, return the intro and associated image of the `url` Wikipedia article. If first is `False`, find a new url found within the `url` Wikipedia article, and return the new url, intro and associated image of the new article."""
         text = None
         while text is None or len(text) > 280 or imageurl is None:
             #if it is the first post, the url will be the starting url given in the constructor
-            if first: 
-                possibleurl = url
+            if first: possibleurl = url
             #otherwise, find a new url
-            else: 
-                possibleurl = self.findnewurl(url)
-                possibleurl = "https://www.wikipedia.org"+ possibleurl
+            else: possibleurl = self.findnewurl(url)
             #get the soup, intro, and imageurl
             soup = self.getsoup(possibleurl)
             text = self.getintro(possibleurl, soup)
