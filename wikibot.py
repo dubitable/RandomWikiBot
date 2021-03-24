@@ -52,10 +52,10 @@ class wikibot:
         #find sentences and return as many as possible
         sentences = re.findall(r"(.*?\.)", text)
         text = ""
-        x=0
+        x=-1
         while x < len(sentences) and len(text)+len(sentences[x]) < 280:
-            text += sentences[x]
             x+=1
+            text += sentences[x]
         return text
 
     def conditions(self, text):
