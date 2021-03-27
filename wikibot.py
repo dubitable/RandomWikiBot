@@ -41,7 +41,6 @@ class wikibot:
         return media
     
     def format(self, elem):
-<<<<<<< HEAD
           """Returns formatted text by taking out elements within parentheses and restricting size."""
           #delete everything between parentheses
           text = elem.text.strip().replace("(listen)","")
@@ -57,24 +56,6 @@ class wikibot:
             text = text[0: -1 * len(sentences[x])]
             x -= 1
           return text
-=======
-        """Returns formatted text by taking out elements within parentheses and restricting size."""
-        #delete everything between parentheses
-        text = elem.text.strip().replace("(listen)","")
-        text = re.sub(r"\[(.*?)\]|\((.*?)\)", "", text)
-        
-        #delete double spaces
-        text = text.replace("  ", " ")
-
-        #find sentences and return as many as possible
-        sentences = re.findall(r"(.*?\.)", text)
-        text = ""
-        x=-1
-        while x < len(sentences) and len(text)+len(sentences[x]) < 280:
-            x+=1
-            text += sentences[x]
-        return text
->>>>>>> fd419c520f71322dc5032b9c77e79f93e35075ad
 
     def conditions(self, text):
         """Returns True if a link is appropriate and to a Wikipedia article."""
