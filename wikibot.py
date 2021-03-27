@@ -41,22 +41,21 @@ class wikibot:
         return media
     
     def format(self, elem):
-        """Returns formatted text by taking out elements within parentheses and restricting size."""
-        #delete everything between parentheses
-        text = elem.text.strip().replace("(listen)","")
-        text = re.sub(r"\[(.*?)\]|\((.*?)\)", "", text)
-        
-        #delete double spaces
-        text = text.replace("  ", " ")
+          """Returns formatted text by taking out elements within parentheses and restricting size."""
+          #delete everything between parentheses
+          text = elem.text.strip().replace("(listen)","")
+          text = re.sub(r"\[(.*?)\]|\((.*?)\)", "", text)
 
-        #find sentences and return as many as possible
-        sentences = re.findall(r"(.*?\.)", text)
-        text = ""
-        x=0
-        while x < len(sentences) and len(text)+len(sentences[x]) < 280:
-            text += sentences[x]
-            x+=1
-        return text
+          #delete double spaces
+          text = text.replace("  ", " ")
+
+          #find sentences and return as many as possible
+          sentences = re.findall(r"(.*?\.)", text)
+          x = len(sentences) - 1
+          while len(text) > 280:
+            text = text[0: -1 * len(sentences[x])]
+            x -= 1
+          return text
 
     def conditions(self, text):
         """Returns True if a link is appropriate and to a Wikipedia article."""
@@ -89,7 +88,7 @@ class wikibot:
 
     def getintro(self, url, soup=None):
         """Returns the intro section of a Wikipedia article."""
-        if soup is None: soup = getsoup(url)
+        if soup is None: soup = self.getsoup(url)
         for elem in soup.find_all("p"):
             #make sure the <p> tag is not empty
             try: elem["class"]
@@ -99,7 +98,7 @@ class wikibot:
     
     def getimageurl(self, url, soup=None):
         """Returns the source url of an image found on a Wikipedia article."""
-        if soup is None: soup = getsoup(articleurl)
+        if soup is None: soup = self.getsoup(articleurl)
         for image in soup.find_all("img"):
             #make sure it is the appropriate link
             if "//upload.wikimedia.org/wikipedia/commons/thumb/" in image["src"]:
@@ -151,5 +150,6 @@ class wikibot:
         media = media.media_id_string
         self.api.update_status(status = message, media_ids=[media])
 
-bot = wikibot("https://wikipedia.org/wiki/Wikipedia")
-bot.tweet()
+if __name__ = "__main__":
+    bot = wikibot("https://wikipedia.org/wiki/Wikipedia")
+    bot.tweet()
