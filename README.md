@@ -20,7 +20,8 @@ wikibot(startpath=None)
 
 The WikiBot Class allows for the extraction and tweeting of articles and associated images as well as the links for the next article. The script does not need to run continuously, as past articles are stored locally in "links.txt". The constructor will connect the bot to the Twitter API and initialize the `wikibot.api` and `wikibot.startpath` instance variables.  
 
-`startpath`: a url (`string`) to the Wikipedia article you would like to begin with - the program will only tweet the corresponding article if "links.txt" is empty, so it is not necessary to specify this argument if is not (optional argument set at `None` by default).  
+Parameters:
+- `startpath`: a url (`string`) to the Wikipedia article you would like to begin with - the program will only tweet the corresponding article if "links.txt" is empty, so it is not necessary to specify this argument if is not (optional argument set at `None` by default).  
 ```
 wikibot.tweet()
 ```
@@ -33,31 +34,35 @@ wikibot.getelements(url, first = False)
 
 If first is `True`, return the intro and associated image of the `url` Wikipedia article. If first is `False`, find a new url found within the `url` Wikipedia article, and return the new url, intro and associated image of the new article.  
 
-`url`: a url (`string`) to a Wikipedia article.
-`first`: a value (`bool`) determining if this is the first tweet or not.
+Parameters:
+- `url`: a url (`string`) to a Wikipedia article.
+- `first`: a value (`bool`) determining if this is the first tweet or not.
 ```
 wikibot.findnewurl(url)
 ```
 
 Returns a random url found within a `url` Wikipedia article.  
 
-`url`: a url (`string`) to a Wikipedia article.
+Parameters:
+- `url`: a url (`string`) to a Wikipedia article.
 ```
 wikibot.getintro(url, soup=None)
 ```
 
 Returns the intro section of an `url` Wikipedia article.
 
-`url`: a url (`string`) to a Wikipedia article.  
-`soup`: a `BeautifulSoup` object of the source code of a Wikipedia article.
+Parameters:
+- `url`: a url (`string`) to a Wikipedia article.  
+- `soup`: a `BeautifulSoup` object of the source code of a Wikipedia article.
 ```
 wikibot.getimageurl(url, soup=None)
 ```
 
 Returns the source url of an image found on a Wikipedia article.  
 
-`url`: a url (`string`) to a Wikipedia article.  
-`soup`: a `BeautifulSoup` object of the source code of a Wikipedia article.
+Parameters:
+- `url`: a url (`string`) to a Wikipedia article.  
+- `soup`: a `BeautifulSoup` object of the source code of a Wikipedia article.
 
 ```
 wikibot.uploadimage(url)
@@ -65,7 +70,8 @@ wikibot.uploadimage(url)
 
 Returns a tweepy media object given an image source.
 
-`url`: the source url (`string`) to an image.
+Parameters:
+- `url`: the source url (`string`) to an image.
 
 ```
 wikibot.getsoup(url)
@@ -73,7 +79,8 @@ wikibot.getsoup(url)
 
 Returns a BeautifulSoup object for a given url.  
 
-`url`: a url (`string`) to a website.
+Parameters:
+- `url`: a url (`string`) to a website.
 
 ```
 wikibot.conditions(url)
@@ -81,7 +88,8 @@ wikibot.conditions(url)
 
 Returns True if a link is appropriate and to a Wikipedia article.    
 
-`url`: a url (`string`) to a website.
+Parameters:
+- `url`: a url (`string`) to a website.
 
 ```
 wikibot.format(text)
@@ -89,7 +97,8 @@ wikibot.format(text)
 
 Returns formatted text by taking out elements within parentheses and restricting size.  
 
-`text`: a text (`string`).
+Parameters:
+- `text`: a text (`string`).
 
 ```
 wikibot.reset()
